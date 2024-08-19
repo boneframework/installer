@@ -136,6 +136,7 @@ else
   git init
   cp .env.example .env
   cd ..
+  echo "COMPOSE_PROJECT_NAME=$projectName" >> .env
   bin/setdomain $domainName
   projectPath=$(pwd)
   bin/run openssl genrsa -out private.key 2048
@@ -149,25 +150,42 @@ else
   echo "The development server is ready to be started. In order to continue, please open another shell terminal, and"
   echo "enter the following commands:"
   echo ""
+  echo "cd $projectPath"
+  echo "bin/start"
   echo ""
-  echo ""
-  echo ""
-  echo ""
-
-  bin/run vendor/bin/bone m:diff --help
+  echo "The Docker development environment will start up, once the servers are up, press [RETURN] to continue:"
+  read pressToContinue
+  bin/run vendor/bin/bone m:diff --no-interaction
+  bin/run vendor/bin/bone m:m --no-interaction
+  bin/run vendor/bin/bone bone m:generate-proxies --no-interaction
+  bin/run vendor/bin/bone migrant:fixtures --no-interaction
+  bin/run vendor/bin/bone assets:deploy --no-interaction
 fi
 
 if (($useNative == 1)); then
+  cd ..
+  git clone https://github.com/boneframework/skeleton.git ${projectName}-native
+  cd ${projectName}-native
   echo '
 now install bone-native'
 fi
 
-cd $projectPath
-echo "The LAMP stack is ready to use. To start it up, please run the following and then head to https://$domainName
-(Be sure to add '127.0.0.1 $domainName' to your '/etc/hosts' file if you haven't already
+echo "Time to set sail! Your project $projectName is ready to use!
 
-  cd $projectPath
-  bin/start
+Make sure you add '127.0.0.1 $domainName' to your /etc/hosts file.
 
-To stop the server, press CTRL-C and then run 'bin/stop'.
+Then head on over to https://$domainName and you should see the Bone Framework skeleton (or backend API)) home page.
+To stop the server, CTRL-C in the terminal tab where you ran bin/start, and then run bin/stop
 "
+
+if (($useNative == 1)); then
+  echo "
+The native app is installed in $projectPath-native. On your smartphone, download Expo Go from Google Play or Apple App Store.
+To start the app, first run:
+
+  cd $projectPath-native
+  npx expo start
+
+Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)
+"
+fi
