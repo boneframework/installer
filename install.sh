@@ -19,6 +19,7 @@ useNative=1
 
 whichGit=$(which git)
 whichDocker=$(which docker)
+whichComposer=$(which composer)
 
 if [[ -z $whichGit ]]; then
   echo 'Git must be installed on this computer, aborting.'
@@ -40,6 +41,10 @@ case $yesno in
         useDocker=0
         echo ""
         echo "Skipping server setup."
+        if [[ -z $whichComposer ]]; then
+          echo 'Unable to find composer, aborting.'
+          exit 1;
+        fi
     ;;
     * ) echo "" && echo "Using boneframework/lamp.";;
 esac
@@ -55,6 +60,7 @@ read -p "Do you wish to use the Bone Native Backend API? (Y/n)" yesno
 case $yesno in
     [Nn]* )
         useBackend=0
+        useNative=0
         echo ""
         echo "Using boneframework/skeleton."
     ;;
@@ -91,18 +97,57 @@ if [[ -z domainName ]]; then
 fi
 
 echo "Using https://$domainName for development.
-You should add '127.0.0.1 $domainName' to your /etc/hosts file."
+You should add '127.0.0.1 $domainName' to your /etc/hosts file.
+"
 
 if (($useDocker == 0)); then
   if (($useBackend == 0)); then
-    echo "Installing boneframework/skeleton"
+    echo "Installing boneframework/skeleton."
+    git clone https://github.com/boneframework/skeleton.git $projectName
   else
     echo "Installing boneframework/bone-native-backend-api"
+    git clone https://github.com/boneframework/bone-native-backend-api.git $projectName
+  fi
+  cd $projectName
+  rm -fr .git
+  git init
+  cp .env.example .env
+  cat .env | sed -e "s/DOMAIN_NAME=awesome.bone/DOMAIN_NAME=$domainName/" > tmp && mv tmp .env
+  composer install
+  if (($useBackend == 1)); then
+    echo "Run migrations, fixtures, deploy assets, etc"
   fi
 else
-  echo "docker etc"
+  echo "Installing boneframework/lamp."
+  git clone https://github.com/boneframework/lamp.git $projectName
+  cd $projectName
+  rm -fr .git
+  rm -fr code
+  if (($useBackend == 0)); then
+    echo "Installing boneframework/skeleton."
+    git clone https://github.com/boneframework/skeleton.git code
+  else
+    echo "Installing boneframework/bone-native-backend-api"
+    git clone https://github.com/boneframework/bone-native-backend-api.git code
+  fi
+  cd code
+  rm -fr .git
+  git init
+  cd ..
+  bin/setdomain $domainName
+  projectPath=$(cwd)
+  echo "The LAMP stack is ready to use. In order to continue, you need to open another shell terminal and run the following
+
+  cd $projectPath
+  bin/start
+
+Once the containers are running (you will see logs for each service scrolling by), press RETURN to continue.
+"
+read pressToContinue
+
 fi
 
 if (($useNative == 1)); then
-  echo 'then install bone-native'
+  echo '
+now install bone-native'
 fi
