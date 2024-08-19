@@ -12,13 +12,21 @@ echo "
 
 
 Welcome to the Bone Framework installer.
-
-Bone framework comes with a Docker development environment. We recommend using this. However it is completely optional
-and you can use your own web server, PHP and database.
 "
 useDocker=1
 useBackend=1
 useNative=1
+
+whichGit=$(which git)
+
+if [[ -z $whichGit ]]; then
+  echo 'Git must be installed on this computer, aborting.'
+  exit 1;
+fi
+
+echo "
+Bone framework comes with a Docker development environment. We recommend using this. However it is completely optional
+and you can use your own web server, PHP and database."
 
 read -p "Do you wish to use the Docker development environment? (Y/n)" yesno
 case $yesno in
@@ -68,7 +76,6 @@ will be suffixed with '-native'
 Please enter a project name:
 "
 read -r projectName
-
 
 echo ''
 
