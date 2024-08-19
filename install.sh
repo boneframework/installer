@@ -134,11 +134,15 @@ else
   cd code
   rm -fr .git
   git init
+  cp .env.example .env
   cd ..
   bin/setdomain $domainName
   projectPath=$(pwd)
-  bin/run cd code/data/keys && openssl genrsa -out private.key 2048 && openssl rsa -in private.key -pubout -out public.key
+  bin/run openssl genrsa -out private.key 2048
+  bin/run openssl rsa -in private.key -pubout -out public.key
+  mv code/public.key code/data/keys/public.key
   chmod 660 code/data/keys/public.key
+  mv code/private.key code/data/keys/private.key
   chmod 660 code/data/keys/private.key
   bin/run composer install
   bin/run vendor/bin/bone m:diff --help
