@@ -18,9 +18,15 @@ useBackend=1
 useNative=1
 
 whichGit=$(which git)
+whichDocker=$(which docker)
 
 if [[ -z $whichGit ]]; then
   echo 'Git must be installed on this computer, aborting.'
+  exit 1;
+fi
+
+if [[ -z $whichDocker ]]; then
+  echo 'Docker must be installed on this computer, aborting.'
   exit 1;
 fi
 
@@ -73,11 +79,19 @@ echo "
 Please give a name for this project, this will be the name of the directory we create. The native app folder (if installed)
 will be suffixed with '-native'
 
-Please enter a project name:
-"
+Please enter a project name:"
 read -r projectName
-
 echo ''
+echo "Please enter a development domain name (default is awesome.bone):"
+read -r domainName
+echo ''
+
+if [[ -z domainName ]]; then
+  domainName='awesome.bone'
+fi
+
+echo "Using https://$domainName for development.
+You should add '127.0.0.1 $domainName' to your /etc/hosts file."
 
 if (($useDocker == 0)); then
   if (($useBackend == 0)); then
