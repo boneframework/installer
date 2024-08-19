@@ -155,9 +155,9 @@ else
   echo ""
   echo "The Docker development environment will start up, once the servers are up, press [RETURN] to continue:"
   read pressToContinue
-  bin/run vendor/bin/bone m:diff --no-interaction
-  bin/run vendor/bin/bone m:m --no-interaction
-  bin/run vendor/bin/bone bone m:generate-proxies --no-interaction
+  bin/run vendor/bin/bone migrant:diff --no-interaction
+  bin/run vendor/bin/bone migrant:migrate --no-interaction
+  bin/run vendor/bin/bone migrant:generate-proxies --no-interaction
   bin/run vendor/bin/bone migrant:fixtures --no-interaction
   bin/run vendor/bin/bone assets:deploy --no-interaction
 fi
@@ -166,8 +166,7 @@ if (($useNative == 1)); then
   cd ..
   git clone https://github.com/boneframework/skeleton.git ${projectName}-native
   cd ${projectName}-native
-  echo '
-now install bone-native'
+  bin/runnode npm ci --save-all
 fi
 
 echo "Time to set sail! Your project $projectName is ready to use!
@@ -175,8 +174,7 @@ echo "Time to set sail! Your project $projectName is ready to use!
 Make sure you add '127.0.0.1 $domainName' to your /etc/hosts file.
 
 Then head on over to https://$domainName and you should see the Bone Framework skeleton (or backend API)) home page.
-To stop the server, CTRL-C in the terminal tab where you ran bin/start, and then run bin/stop
-"
+To stop the server, CTRL-C in the terminal tab where you ran bin/start, and then run bin/stop"
 
 if (($useNative == 1)); then
   echo "
@@ -186,6 +184,8 @@ To start the app, first run:
   cd $projectPath-native
   npx expo start
 
-Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)
-"
+Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)"
 fi
+
+echo "☠️ Welcome aboard and good luck on  your voyage!"
+exit 0
