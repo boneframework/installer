@@ -33,7 +33,8 @@ fi
 
 echo "
 Bone framework comes with a Docker development environment. We recommend using this. However it is completely optional
-and you can use your own web server, PHP and database."
+and you can use your own web server, PHP and database.
+"
 
 read -p "Do you wish to use the Docker development environment? (Y/n)" yesno
 case $yesno in
@@ -135,19 +136,25 @@ else
   git init
   cd ..
   bin/setdomain $domainName
-  projectPath=$(cwd)
-  echo "The LAMP stack is ready to use. In order to continue, you need to open another shell terminal and run the following
-
-  cd $projectPath
-  bin/start
-
-Once the containers are running (you will see logs for each service scrolling by), press RETURN to continue.
-"
-read pressToContinue
-
+  projectPath=$(pwd)
+  bin/run cd code/data/keys && openssl genrsa -out private.key 2048 && openssl rsa -in private.key -pubout -out public.key
+  chmod 660 code/data/keys/public.key
+  chmod 660 code/data/keys/private.key
+  bin/run composer install
+  bin/run vendor/bin/bone m:diff --help
 fi
 
 if (($useNative == 1)); then
   echo '
 now install bone-native'
 fi
+
+cd $projectPath
+echo "The LAMP stack is ready to use. To start it up, please run the following and then head to https://$domainName
+(Be sure to add '127.0.0.1 $domainName' to your '/etc/hosts' file if you haven't already
+
+  cd $projectPath
+  bin/start
+
+To stop the server, press CTRL-C and then run 'bin/stop'.
+"
