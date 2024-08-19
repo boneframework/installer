@@ -145,6 +145,15 @@ else
   mv code/private.key code/data/keys/private.key
   chmod 660 code/data/keys/private.key
   bin/run composer install
+  echo ""
+  echo "The development server is ready to be started. In order to continue, please open another shell terminal, and"
+  echo "enter the following commands:"
+  echo ""
+  echo ""
+  echo ""
+  echo ""
+  echo ""
+
   bin/run vendor/bin/bone m:diff --help
 fi
 
