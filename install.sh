@@ -196,8 +196,23 @@ To start the app, first run:
   cd $projectPath-native
   npx expo start
 
-Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)"
+Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)
+"
 fi
 
-echo "☠️  Welcome aboard and good luck on  your voyage!"
+echo "The Docker backend is already running in your other tab."
+read -p "Do you wish to start the React Native Expo project too? (Y/n)" yesno
+case $yesno in
+    [Nn]* )
+        echo ""
+        echo "Skipping $projectName-native launch."
+    ;;
+    * )
+      echo "Launching Expo.."
+      cd $projectName-native
+      npx expo-start
+    ;;
+esac
+
+echo "☠️  Welcome aboard and good luck on your voyage!"
 exit 0
