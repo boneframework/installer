@@ -20,6 +20,8 @@ useNative=1
 whichGit=$(which git)
 whichDocker=$(which docker)
 whichComposer=$(which composer)
+whichNpm=$(which npm)
+whichNpx=$(which npx)
 
 if [[ -z $whichGit ]]; then
   echo 'Git must be installed on this computer, aborting.'
@@ -78,7 +80,17 @@ Bone Framework has a ready for development React Native Expo app via boneframewo
           useNative=0
           echo "Skipping boneframework/bone-native."
       ;;
-      * ) echo "Using boneframework/bone-native.";;
+      * )
+          echo "Using boneframework/bone-native."
+          if [[ -z $whichNpm ]]; then
+            echo 'Unable to find npm, please install it.'
+            exit 1;
+          fi
+          if [[ -z $whichNpx ]]; then
+            echo 'Unable to find npx, please install it.'
+            exit 1;
+          fi
+      ;;
   esac
 fi
 
@@ -166,7 +178,7 @@ if (($useNative == 1)); then
   cd ..
   git clone https://github.com/boneframework/skeleton.git ${projectName}-native
   cd ${projectName}-native
-  bin/runnode npm ci --save-all
+  npm ci --save-all
 fi
 
 echo "Time to set sail! Your project $projectName is ready to use!
