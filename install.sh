@@ -167,16 +167,16 @@ else
   echo ""
   echo "The Docker development environment will start up, once the servers are up, press [RETURN] to continue:"
   read pressToContinue
-  bin/run vendor/bin/bone migrant:diff --no-interaction
-  bin/run vendor/bin/bone migrant:migrate --no-interaction
-  bin/run vendor/bin/bone migrant:generate-proxies --no-interaction
-  bin/run vendor/bin/bone migrant:fixtures --no-interaction
-  bin/run vendor/bin/bone assets:deploy --no-interaction
+  bin/execute vendor/bin/bone migrant:diff --no-interaction
+  bin/execute vendor/bin/bone migrant:migrate --no-interaction
+  bin/execute vendor/bin/bone migrant:generate-proxies --no-interaction
+  bin/execute vendor/bin/bone migrant:fixtures --no-interaction
+  bin/execute vendor/bin/bone assets:deploy --no-interaction
 fi
 
 if (($useNative == 1)); then
   cd ..
-  git clone https://github.com/boneframework/skeleton.git ${projectName}-native
+  git clone https://github.com/boneframework/bone-native.git ${projectName}-native
   cd ${projectName}-native
   npm ci --save-all
 fi
@@ -199,5 +199,5 @@ To start the app, first run:
 Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)"
 fi
 
-echo "☠️ Welcome aboard and good luck on  your voyage!"
+echo "☠️  Welcome aboard and good luck on  your voyage!"
 exit 0
