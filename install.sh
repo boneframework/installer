@@ -158,6 +158,7 @@ else
   mv code/private.key code/data/keys/private.key
   chmod 660 code/data/keys/private.key
   bin/run composer install
+  docker volume rm ${projectName}_db_data || echo 'volume clear'
   echo ""
   echo "The development server is ready to be started. In order to continue, please open another shell terminal, and"
   echo "enter the following commands:"
@@ -167,6 +168,7 @@ else
   echo ""
   echo "The Docker development environment will start up, once the servers are up, press [RETURN] to continue:"
   read pressToContinue
+  docker volume rm ${projectName}_db_data || echo 'volume clear'
   bin/execute vendor/bin/bone migrant:diff --no-interaction
   bin/execute vendor/bin/bone migrant:migrate --no-interaction
   bin/execute vendor/bin/bone migrant:generate-proxies --no-interaction
@@ -198,8 +200,6 @@ To start the app, first run:
 
 Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)
 "
-fi
-
 echo "The Docker backend is already running in your other tab."
 read -p "Do you wish to start the React Native Expo project too? (Y/n)" yesno
 case $yesno in
@@ -209,10 +209,11 @@ case $yesno in
     ;;
     * )
       echo "Launching Expo.."
-      cd $projectName-native
-      npx expo-start
+      npx expo start
     ;;
 esac
+fi
 
-echo "☠️  Welcome aboard and good luck on your voyage!"
+echo "
+☠️  Welcome aboard and good luck on your voyage!"
 exit 0
