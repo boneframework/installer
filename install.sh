@@ -158,7 +158,7 @@ else
   mv code/private.key code/data/keys/private.key
   chmod 660 code/data/keys/private.key
   bin/run composer install
-  docker volume rm ${projectName}_db_data || echo 'volume clear'
+  docker volume rm ${projectName}_db_data >/dev/null 2>&1
   echo ""
   echo "The development server is ready to be started. In order to continue, please open another shell terminal, and"
   echo "enter the following commands:"
@@ -167,7 +167,6 @@ else
   echo "bin/start"
   echo ""
   echo "The Docker development environment will start up, once the servers are up, press [RETURN] to continue:"
-  docker volume rm ${projectName}_db_data || echo 'volume clear'
   read pressToContinue
   bin/execute vendor/bin/bone migrant:diff --no-interaction
   bin/execute vendor/bin/bone migrant:migrate --no-interaction
@@ -180,14 +179,16 @@ if (($useNative == 1)); then
   cd ..
   git clone https://github.com/boneframework/bone-native.git ${projectName}-native
   cd ${projectName}-native
+  rm -fr .git
+  git init
   npm ci --save-all
-  cat .env | sed -e "s/EXPO_PUBLIC_API_URL=https://awesome.bone/EXPO_PUBLIC_API_URL=https://$domainName/" > tmp && mv tmp .env
+  cat .env | sed -e "s/EXPO_PUBLIC_API_URL=https:\/\/awesome.bone/EXPO_PUBLIC_API_URL=https:\/\/$domainName/" > tmp && mv tmp .env
   cd ../${projectName}
   source .env
   command="mariadb --user=$MYSQL_USER --password=\"$MYSQL_ROOT_PASSWORD\" --database=awesome -s -N --execute=\"SELECT identifier from Client where id = 1\""
   clientId=$(docker compose --env-file=.env exec -it mariadb bash -c "$command")
   cd ../${projectName}-native
-  cat .env | sed -e "s/EXPO_PUBLIC_API_CLIENT_ID=32815de2c0a25d239ff0585674c938a9/EXPO_PUBLIC_API_CLIENT_ID=$clientId/" > tmp && mv tmp .env
+  cat .env | sed -e "s/EXPO_PUBLIC_API_CLIENT_ID=.+/EXPO_PUBLIC_API_CLIENT_ID=$clientId/" > tmp && mv tmp .env
 fi
 
 echo "Time to set sail! Your project $projectName is ready to use!
