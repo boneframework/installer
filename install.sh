@@ -181,6 +181,13 @@ if (($useNative == 1)); then
   git clone https://github.com/boneframework/bone-native.git ${projectName}-native
   cd ${projectName}-native
   npm ci --save-all
+  cat .env | sed -e "s/EXPO_PUBLIC_API_URL=https://awesome.bone/EXPO_PUBLIC_API_URL=https://$domainName/" > tmp && mv tmp .env
+  cd ../${projectName}
+  source .env
+  command="mariadb --user=$MYSQL_USER --password=\"$MYSQL_ROOT_PASSWORD\" --database=awesome -s -N --execute=\"SELECT identifier from Client where id = 1\""
+  clientId=$(docker compose --env-file=.env exec -it mariadb bash -c "$command")
+  cd ${projectName}-native
+  cat .env | sed -e "s/EXPO_PUBLIC_API_CLIENT_ID=32815de2c0a25d239ff0585674c938a9/EXPO_PUBLIC_API_CLIENT_ID=$clientId/" > tmp && mv tmp .env
 fi
 
 echo "Time to set sail! Your project $projectName is ready to use!
@@ -200,18 +207,21 @@ To start the app, first run:
 
 Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)
 "
-echo "The Docker backend is already running in your other tab."
-read -p "Do you wish to start the React Native Expo project too? (Y/n)" yesno
-case $yesno in
-    [Nn]* )
-        echo ""
-        echo "Skipping $projectName-native launch."
-    ;;
-    * )
-      echo "Launching Expo.."
-      npx expo start
-    ;;
-esac
+  echo "The Docker backend is already running in your other tab."
+  read -p "Do you wish to start the React Native Expo project too? (Y/n)" yesno
+  case $yesno in
+      [Nn]* )
+          echo ""
+          echo "Skipping $projectName-native launch."
+          cd ..
+      ;;
+      * )
+        echo "Launching Expo.."
+        npx expo start
+      ;;
+  esac
+else
+  cd..
 fi
 
 echo "
