@@ -101,12 +101,12 @@ will be suffixed with '-native'
 Please enter a project name:"
 read -r projectName
 echo ''
-echo "Please enter a development domain name (default is awesome.bone):"
+echo "Please enter a development domain name (default is boneframework.docker):"
 read -r domainName
 echo ''
 
 if [[ -z $domainName ]]; then
-  domainName='awesome.bone'
+  domainName='boneframework.docker'
 fi
 
 echo "Using https://$domainName for development.
@@ -125,7 +125,7 @@ if (($useDocker == 0)); then
   rm -fr .git
   git init
   cp .env.example .env
-  cat .env | sed -e "s/DOMAIN_NAME=awesome.bone/DOMAIN_NAME=$domainName/" > tmp && mv tmp .env
+  cat .env | sed -e "s/DOMAIN_NAME=boneframework.docker/DOMAIN_NAME=$domainName/" > tmp && mv tmp .env
   composer install
   if (($useBackend == 1)); then
     echo "Run migrations, fixtures, deploy assets, etc"
@@ -182,7 +182,7 @@ if (($useNative == 1)); then
   rm -fr .git
   git init
   npm ci --save-all
-  cat .env | sed -e "s/EXPO_PUBLIC_API_URL=https:\/\/awesome.bone/EXPO_PUBLIC_API_URL=https:\/\/$domainName/" > tmp && mv tmp .env
+  cat .env | sed -e "s/EXPO_PUBLIC_API_URL=https:\/\/boneframework.docker/EXPO_PUBLIC_API_URL=https:\/\/$domainName/" > tmp && mv tmp .env
   cd ../${projectName}
   ipAddress=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1)
   bin/query "UPDATE Client SET redirectUri='exp://$ipAddress:8081/--/oauth2/callback'"
