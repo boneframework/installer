@@ -212,11 +212,7 @@ The certificate can be found at $projectPath/${domainName}_selfigned.crt.
 We detected your IP as $ipAddress, and so have set the API Client redirect URL to exp://${ipAddress}:8081/--/oauth2/callback
 You should change this in the Client table of the database if you are on a different network
 
-To start the app, first run:
-
-  cd $projectPath-native
-  npx expo start
-
+Open your proxy (Proxyman recommended), and set your phone's WiFi connection to use the proxy IP ad port (typically ${ipAddress}:9090)
 Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)
 "
   echo "The Docker backend is already running in your other tab."
