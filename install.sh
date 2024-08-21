@@ -184,6 +184,9 @@ if (($useNative == 1)); then
   npm ci --save-all
   cat .env | sed -e "s/EXPO_PUBLIC_API_URL=https:\/\/awesome.bone/EXPO_PUBLIC_API_URL=https:\/\/$domainName/" > tmp && mv tmp .env
   cd ../${projectName}
+  ipAddress=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1)
+  bin/query "UPDATE Client SET redirectUri='exp://$ipAddress:8081/--/oauth2/callback'"
+  docker compose exec $domainName bash -c "cat /etc/ssl/certs/selfsigned.crt" > ${domainName}_selfigned.crt
   source .env
   command="mariadb --user=$MYSQL_USER --password=\"$MYSQL_ROOT_PASSWORD\" --database=awesome -s -N --execute=\"SELECT identifier from Client where id = 1\""
   clientId=$(docker compose --env-file=.env exec -it mariadb bash -c "$command")
@@ -201,6 +204,13 @@ To stop the server, CTRL-C in the terminal tab where you ran bin/start, and then
 if (($useNative == 1)); then
   echo "
 The native app is installed in $projectPath-native. On your smartphone, download Expo Go from Google Play or Apple App Store.
+
+You will first need to install the site's self-signed certificate onto your phone. See the REAME.md for more details.
+The certificate can be found at $projectPath/${domainName}_selfigned.crt.
+
+We detected your IP as $ipAddress, and so have set the API Client redirect URL to exp://${ipAddress}:8081/--/oauth2/callback
+You should change this in the Client table of the database if you are on a different network
+
 To start the app, first run:
 
   cd $projectPath-native
