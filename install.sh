@@ -105,7 +105,7 @@ echo "Please enter a development domain name (default is awesome.bone):"
 read -r domainName
 echo ''
 
-if [[ -z domainName ]]; then
+if [[ -z $domainName ]]; then
   domainName='awesome.bone'
 fi
 
