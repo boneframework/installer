@@ -167,8 +167,8 @@ else
   echo "bin/start"
   echo ""
   echo "The Docker development environment will start up, once the servers are up, press [RETURN] to continue:"
-  read pressToContinue
   docker volume rm ${projectName}_db_data || echo 'volume clear'
+  read pressToContinue
   bin/execute vendor/bin/bone migrant:diff --no-interaction
   bin/execute vendor/bin/bone migrant:migrate --no-interaction
   bin/execute vendor/bin/bone migrant:generate-proxies --no-interaction
@@ -186,7 +186,7 @@ if (($useNative == 1)); then
   source .env
   command="mariadb --user=$MYSQL_USER --password=\"$MYSQL_ROOT_PASSWORD\" --database=awesome -s -N --execute=\"SELECT identifier from Client where id = 1\""
   clientId=$(docker compose --env-file=.env exec -it mariadb bash -c "$command")
-  cd ${projectName}-native
+  cd ../${projectName}-native
   cat .env | sed -e "s/EXPO_PUBLIC_API_CLIENT_ID=32815de2c0a25d239ff0585674c938a9/EXPO_PUBLIC_API_CLIENT_ID=$clientId/" > tmp && mv tmp .env
 fi
 
