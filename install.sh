@@ -187,6 +187,7 @@ if (($useNative == 1)); then
   ipAddress=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1)
   bin/query "UPDATE Client SET redirectUri='exp://$ipAddress:8081/--/oauth2/callback'"
   docker compose exec $domainName bash -c "cat /etc/ssl/certs/selfsigned.crt" > ${domainName}_selfigned.crt
+  docker compose exec $domainName bash -c "cat /etc/ssl/certs/selfsigned.key" > ${domainName}_selfigned.key
   source .env
   command="mariadb --user=$MYSQL_USER --password=\"$MYSQL_ROOT_PASSWORD\" --database=awesome -s -N --execute=\"SELECT identifier from Client where id = 1\""
   clientId=$(docker compose --env-file=.env exec -it mariadb bash -c "$command")
