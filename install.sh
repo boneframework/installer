@@ -114,32 +114,18 @@ if (($useBackend == 0)); then
   bin/setdomain $domainName
   projectPath=$(pwd)
   bin/run composer install
-  read -p "Do you wish to use launch the server now? (Y/n)" yesno
-    case $yesno in
-        [Nn]* )
-            echo "Your Bone Framework project is ready for development"
-            echo "To start the sever, run the following commands"
-            echo ""
-            echo "cd $projectPath"
-            echo "bin/start"
-            echo ""
-            echo "To stop the server, press CTRL-C and then run bin/stop."
-            echo ""
-            echo "☠️  Welcome aboard and good luck on your voyage!"
-            cd ..
-            exit 0
-        ;;
-        * )
-            echo "The development server is ready to be started. In order to continue, please open another shell terminal, and"
-            echo "enter the following commands:"
-            echo ""
-            echo "cd $projectPath"
-            echo "bin/start"
-            echo ""
-            echo "The Docker development environment will start up, once the servers are up, press [RETURN] to continue:"
-            read pressToContinue
-        ;;
-    esac
+  echo "Time to set sail! Your Bone Framework project is ready for development."
+  echo "Make sure you add '127.0.0.1 $domainName' to your /etc/hosts file."
+  echo "To start the sever, run the following commands"
+  echo ""
+  echo "cd $projectPath"
+  echo "bin/start"
+  echo ""
+  echo "To stop the server, press CTRL-C and then run bin/stop."
+  echo ""
+  echo "☠️  Welcome aboard and good luck on your voyage!"
+  cd ..
+  exit 0
 else
   echo "Installing boneframework/bone-native-backend-api"
   git clone https://github.com/boneframework/bone-native-backend-api.git code
