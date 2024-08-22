@@ -76,10 +76,12 @@ Bone Framework has a ready for development React Native Expo app via boneframewo
 fi
 
 echo "
-Please give a name for this project, this will be the name of the directory we create. The native app folder (if installed)
-will be suffixed with '-native'
+Please give a name for this project, this will be the name of the directory we create."
+if (($useNative == 1)); then
+  echo "The native app folder will be suffixed with '-native'"
+fi
 
-Please enter a project name:"
+echo "Please enter a project name:"
 read -r projectName
 echo ''
 echo "Please enter a development domain name (default is boneframework.docker):"
@@ -108,6 +110,9 @@ if (($useBackend == 0)); then
   git init
   cp .env.example .env
   cd ..
+  echo "COMPOSE_PROJECT_NAME=$projectName" >> .env
+  bin/setdomain $domainName
+  projectPath=$(pwd)
   bin/run composer install
   read -p "Do you wish to use launch the server now? (Y/n)" yesno
     case $yesno in
@@ -119,8 +124,8 @@ if (($useBackend == 0)); then
             echo "bin/start"
             echo ""
             echo "To stop the server, press CTRL-C and then run bin/stop."
-            echo "
-            ☠️  Welcome aboard and good luck on your voyage!"
+            echo ""
+            echo "☠️  Welcome aboard and good luck on your voyage!"
             cd ..
             exit 0
         ;;
