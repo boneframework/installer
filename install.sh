@@ -34,32 +34,13 @@ if [[ -z $whichDocker ]]; then
 fi
 
 echo "
-Bone framework comes with a Docker development environment. We recommend using this. However it is completely optional
-and you can use your own web server, PHP and database.
+This installer will install the Bone Native Backend API and several Bone packages which provide user registration and login.
+Of course, Bone Framework can also be installed 'bare bones' via boneframework/skeleton.
+If you will be using Bone Native to create smartphone apps, or if you just want a website with login functionality, select
+'Yes'. Otherwise select 'No' to use the skeleton app.
 "
 
-read -p "Do you wish to use the Docker development environment? (Y/n)" yesno
-case $yesno in
-    [Nn]* )
-        useDocker=0
-        echo ""
-        echo "Skipping server setup."
-        if [[ -z $whichComposer ]]; then
-          echo 'Unable to find composer, aborting.'
-          exit 1;
-        fi
-    ;;
-    * ) echo "" && echo "Using boneframework/lamp.";;
-esac
-
-echo "
-Bone Framework can either be installed 'bare bones' via boneframework/skeleton, or come pre-configured with
-many packages installed, such as user registration and login functionality, via boneframework/bone-native-backend-api.
-If you will be using Bone Native to create smartphone apps, or if you just want the user login functionality, select
-'Yes'. Otherwise select 'no' to use the skeleton app.
-"
-
-read -p "Do you wish to use the Bone Native Backend API? (Y/n)" yesno
+read -p "Do you wish to use the preconfigured Bone Framework? (Y/n)" yesno
 case $yesno in
     [Nn]* )
         useBackend=0
@@ -113,36 +94,23 @@ echo "Using https://$domainName for development.
 You should add '127.0.0.1 $domainName' to your /etc/hosts file.
 "
 
-if (($useDocker == 0)); then
-  if (($useBackend == 0)); then
-    echo "Installing boneframework/skeleton."
-    git clone https://github.com/boneframework/skeleton.git $projectName
-  else
-    echo "Installing boneframework/bone-native-backend-api"
-    git clone https://github.com/boneframework/bone-native-backend-api.git $projectName
-  fi
-  cd $projectName
+
+echo "Installing boneframework/lamp."
+git clone https://github.com/boneframework/lamp.git $projectName
+cd $projectName
+rm -fr .git
+rm -fr code
+if (($useBackend == 0)); then
+  echo "Installing boneframework/skeleton."
+  git clone https://github.com/boneframework/skeleton.git code
+  cd code
   rm -fr .git
   git init
   cp .env.example .env
-  cat .env | sed -e "s/DOMAIN_NAME=boneframework.docker/DOMAIN_NAME=$domainName/" > tmp && mv tmp .env
-  composer install
-  if (($useBackend == 1)); then
-    echo "Run migrations, fixtures, deploy assets, etc"
-  fi
+  cd ..
 else
-  echo "Installing boneframework/lamp."
-  git clone https://github.com/boneframework/lamp.git $projectName
-  cd $projectName
-  rm -fr .git
-  rm -fr code
-  if (($useBackend == 0)); then
-    echo "Installing boneframework/skeleton."
-    git clone https://github.com/boneframework/skeleton.git code
-  else
-    echo "Installing boneframework/bone-native-backend-api"
-    git clone https://github.com/boneframework/bone-native-backend-api.git code
-  fi
+  echo "Installing boneframework/bone-native-backend-api"
+  git clone https://github.com/boneframework/bone-native-backend-api.git code
   cd code
   rm -fr .git
   git init
