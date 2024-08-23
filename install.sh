@@ -104,27 +104,31 @@ rm -fr .git
 rm -fr code
 
 # Copy over custom SSL certificates
+echo ""
 read -p "Would you like to use an existing SSL certificate instead of generating one? (y/N)" yesno
 case $yesno in
     [Yy]* )
         copied=false
         while ! $copied ; do
           read -p "Please give the path to your .crt file:  " crtFile
-          if [[ -e crtFile ]]]; then
-            cp crtFile build/certificates/server.crt
+          if [[ -f $crtFile ]]; then
+            cp $crtFile build/certificates/server.crt
             copied=true
           else
-            echo "File not found."
+            echo "File $crtFile not found."
+            ls ~/Desktop/
+            ls $crtFile
           fi
         done
         copied=false
         while ! $copied ; do
           read -p "Please give the path to your .key file:  " keyFile
-          if [[ -e keyFile ]]]; then
-            cp keyFile build/certificates/server.key
+          if [[ -f "$keyFile" ]]; then
+            cp $keyFile build/certificates/server.key
             copied=true
           else
             echo "File not found."
+
           fi
         done
     ;;
