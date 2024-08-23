@@ -96,12 +96,43 @@ echo "Using https://$domainName for development.
 You should add '127.0.0.1 $domainName' to your /etc/hosts file.
 "
 
-
+# Install the LAMP stack
 echo "Installing boneframework/lamp."
 git clone https://github.com/boneframework/lamp.git $projectName
 cd $projectName
 rm -fr .git
 rm -fr code
+
+# Copy over custom SSL certificates
+read -p "Would you like to use an existing SSL certificate instead of generating one? (y/N)" yesno
+case $yesno in
+    [Yy]* )
+        copied=false
+        while ! $copied ; do
+          read -p "Please give the path to your .crt file:  " crtFile
+          if [[ -e crtFile ]]]; then
+            cp crtFile build/certificates/server.crt
+            copied=true
+          else
+            echo "File not found."
+          fi
+        done
+        copied=false
+        while ! $copied ; do
+          read -p "Please give the path to your .key file:  " keyFile
+          if [[ -e keyFile ]]]; then
+            cp keyFile build/certificates/server.key
+            copied=true
+          else
+            echo "File not found."
+          fi
+        done
+    ;;
+    * ) echo "" && echo "A self signed certificate for $domainName will be generated.";;
+esac
+
+
+
 if (($useBackend == 0)); then
   echo "Installing boneframework/skeleton."
   git clone https://github.com/boneframework/skeleton.git code
@@ -172,8 +203,8 @@ if (($useNative == 1)); then
   cd ../${projectName}
   ipAddress=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1)
   bin/query "UPDATE Client SET redirectUri='exp://$ipAddress:8081/--/oauth2/callback'"
-  docker compose exec $domainName bash -c "cat /etc/ssl/certs/selfsigned.crt" > ${domainName}_selfigned.crt
-  docker compose exec $domainName bash -c "cat /etc/ssl/certs/selfsigned.key" > ${domainName}_selfigned.key
+  docker compose exec $domainName bash -c "cat /etc/ssl/certs/server.crt" > ${domainName}.crt
+  docker compose exec $domainName bash -c "cat /etc/ssl/certs/server.key" > ${domainName}.key
   source .env
   command="mariadb --user=$MYSQL_USER --password=\"$MYSQL_ROOT_PASSWORD\" --database=awesome -s -N --execute=\"SELECT identifier from Client where id = 1\""
   clientId=$(docker compose --env-file=.env exec -it mariadb bash -c "$command")
@@ -193,7 +224,7 @@ if (($useNative == 1)); then
 The native app is installed in $projectPath-native. On your smartphone, download Expo Go from Google Play or Apple App Store.
 
 You will first need to install the site's self-signed certificate onto your phone, and add it to Prroxyman. See the REAME.md for more details.
-The certificate can be found at $projectPath/${domainName}_selfigned.crt.
+The certificate can be found at $projectPath/${domainName}.crt, as can the key.
 
 We detected your IP as $ipAddress, and so have set the API Client redirect URL to exp://${ipAddress}:8081/--/oauth2/callback
 You should change this in the Client table of the database if you are on a different network
