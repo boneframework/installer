@@ -46,7 +46,7 @@ you need to send the certificate to your phone.
 - Flip the switch on and confirm 
 - Open Safari and scroll to `https://boneframework.docker` (or your custom domain) and you should now be able to reach it.
 
-![Certificate Trust Settings](https://github.com/boneframework/.github/blob/master/profile/installer/6_certificate_trust_settings.PNG?raw=true)  ![Trust Certificate](https://github.com/boneframework/.github/blob/master/profile/installer/7_trust_certificate.PNG?raw=true)
+![Certificate Trust Settings](https://github.com/boneframework/.github/blob/master/profile/installer/6_trust_settings.png?raw=true)  ![Trust Certificate](https://github.com/boneframework/.github/blob/master/profile/installer/7_trust_certificate.PNG?raw=true)
 
 Also, download the [Proxyman CA certificate](http://cert.proxyman.io) `http://cert.proxyman.io` on your phone, install 
 and trust in the same way as the previous one.
