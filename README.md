@@ -7,6 +7,7 @@ Native App.
 - [Docker](https://www.docker.com/)
 - [Node LTS](https://github.com/nvm-sh/nvm)
 - [Proxyman](https://proxyman.io/)
+- [Expo Go](https://expo.dev/go)
 ## usage
 Download and run the install.sh script from this repository using this command
 ```
@@ -24,8 +25,9 @@ Now you should be able to browse to `https://boneframework.docker` from your lap
 ### proxy
 Your phone will not be able to see your custom development domain name (that's hosted on your laptop) until you change the 
 WiFi settings on it to use a proxy. Launch Proxyman on your laptop, and enter the IP address and port (typically 9090)
-into the WiFi Proxy settings on your phone (info circle for your connection). Also, follow the instructions to install the Proxyman CA certificate on your
-phone.
+into the WiFi Proxy settings on your phone (info circle for your connection). 
+
+Also, do the same for the [Proxyman CA certificate](http://cert.proxyman.io) on your phone.
 
 ![Proxy](https://github.com/boneframework/.github/blob/master/profile/installer/proxy.PNG?raw=true) ![Proxy Settings](https://github.com/boneframework/.github/blob/master/profile/installer/proxy2.PNG?raw=true)
 
@@ -46,7 +48,7 @@ you need to send the certificate to your phone.
 - Flip the switch on and confirm 
 - Open Safari and scroll to `https://boneframework.docker` (or your custom domain) and you should be able to reach it.
 
-![Certificate Trust Settings](https://github.com/boneframework/.github/blob/master/profile/installer/6_certificate_trust_settings.PNG?raw=true)  ![Trust Certificate](https://github.com/boneframework/.github/blob/master/profile/installer/7_trust_certificate.PNG?raw=true)
+![Certificate Trust Settings](https://github.com/boneframework/.github/blob/master/profile/installer/6_certificate_trust_settings.png?raw=true)  ![Trust Certificate](https://github.com/boneframework/.github/blob/master/profile/installer/7_trust_certificate.PNG?raw=true)
 
 You are now ready to open your App and start developing! There is a user ready in the database so you can immediately 
 login. `man@work.com` with password `123456`.
