@@ -29,6 +29,11 @@ into the WiFi Proxy settings on your phone (info circle for your connection).
 
 ![Proxy](https://github.com/boneframework/.github/blob/master/profile/installer/proxy.PNG?raw=true) ![Proxy Settings](https://github.com/boneframework/.github/blob/master/profile/installer/proxy2.PNG?raw=true)
 
+In Proxyman, find your domain in the domain section, right click, and select "Pin". \
+In the panel on  the right, enable SSL Proxying.
+
+![Pin Domain](https://github.com/boneframework/.github/blob/master/profile/installer/pin_domain.png?raw=true) ![Enable SSL Proxying](https://github.com/boneframework/.github/blob/master/profile/installer/ssl_proxy.png?raw=true)
+
 ### ssl certificates
 Your custom SSL Certificate will first need to be installed on your phone before it can connect to your API properly, so 
 you need to send the certificate to your phone.
