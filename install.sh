@@ -84,12 +84,12 @@ fi
 echo "Please enter a project name:"
 read -r projectName
 echo ''
-echo "Please enter a development domain name (default is boneframework.docker):"
+echo "Please enter a development domain name (default is ${projectName}.docker):"
 read -r domainName
 echo ''
 
 if [[ -z $domainName ]]; then
-  domainName='boneframework.docker'
+  domainName="${projectName}.docker"
 fi
 
 echo "Using https://$domainName for development.
