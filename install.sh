@@ -213,7 +213,16 @@ if (($useNative == 1)); then
   command="mariadb --user=$MYSQL_USER --password=\"$MYSQL_ROOT_PASSWORD\" --database=awesome -s -N --execute=\"SELECT identifier from Client where id = 1\""
   clientId=$(docker compose --env-file=.env exec -it mariadb bash -c "$command")
   cd ../${projectName}-native
-  cat .env | sed -e "s/EXPO_PUBLIC_API_CLIENT_ID=.+/EXPO_PUBLIC_API_CLIENT_ID=$clientId/" > tmp && mv tmp .env
+  cat .env | sed -e "s/EXPO_PUBLIC_API_CLIENT_ID=.+/EXPO_PUBLIC_API_CLIENT_ID=$projectId/" > tmp && mv tmp .env
+  echo "Please enter an Expo project ID (or press RETURN to skip):"
+  read -r projectID
+  echo ''
+  if [[ -z $projectID ]]; then
+    projectID='d216e1c7-29aa-4d2d-a535-88065482b06e'
+  fi
+  cat app.json | sed -e "s/        \"projectId\": \"d216e1c7-29aa-4d2d-a535-88065482b06e\"/        \"projectId\": \"$projectId\"/" > tmp && mv tmp app.json
+  cat app.json | sed -e "s/    \"name\": \"Bone Native\"/    \"name\": \"$projectName\"/" > tmp && mv tmp app.json
+  cat app.json | sed -e "s/    \"slug\": \"bone-native\"/    \"name\": \"$projectName\"/" > tmp && mv tmp app.json
 fi
 
 echo "Time to set sail! Your project $projectName is ready to use!
