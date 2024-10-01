@@ -207,6 +207,7 @@ if (($useNative == 1)); then
   cd ../${projectName}
   ipAddress=$(ifconfig | grep 'inet ' | grep -Fv 127.0.0.1 | awk '{print $2}' | head -n 1)
   bin/query "UPDATE Client SET redirectUri='exp://$ipAddress:8081/--/oauth2/callback'"
+  cat code/config/bone-native.php | sed -e "s/192\.168\.0\.204/$ipAddress/" > tmp && mv tmp code/config/bone-native.php
   docker compose exec $domainName bash -c "cat /etc/ssl/certs/server.crt" > ${domainName}.crt
   docker compose exec $domainName bash -c "cat /etc/ssl/certs/server.key" > ${domainName}.key
   source .env
@@ -240,7 +241,8 @@ You will first need to install the site's self-signed certificate onto your phon
 The certificate can be found at $projectPath/${domainName}.crt, as can the key.
 
 We detected your IP as $ipAddress, and so have set the API Client redirect URL to exp://${ipAddress}:8081/--/oauth2/callback
-You should change this in the Client table of the database if you are on a different network
+You should change this in the Client table of the database if you are on a different network. The other place this IP
+address is mentioned is in the backend server, in code/config/bone-native.php, edit the IP address for the deep link.
 
 Open Proxyman recommended, and set your phone's WiFi connection to use the proxy IP ad port (typically ${ipAddress}:9090)
 Then scan the QR code with your phone's camera in order to launch the app (or open Expo Go and open it that way)
